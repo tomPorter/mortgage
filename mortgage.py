@@ -1,13 +1,16 @@
 # Mortgage amortization
 """
-    mortgage.amortization_table(66000,3,180,61,450)
+    mortgage.amortization_table(66899,3,120,61,450)
 
     $66K principle, 3% APR, 15 year term, additional principal each month of $450 starting in year 6
 """
 from decimal import *
+import datetime
+from dateutil.relativedelta import *
 
 
-def amortization_table(principal, rate, term, additional_month=0, addiitonal_principal=0):
+def amortization_table(principal, rate, term, additional_month=0, addiitonal_principal=0, start_date=datetime.date(2013,1,31)):
+
     ''' Prints the amortization table for a loan.
 
     Prints the amortization table for a loan given
@@ -16,9 +19,10 @@ def amortization_table(principal, rate, term, additional_month=0, addiitonal_pri
 
     payment = pmt(principal, rate, term)
     begBal = principal
+    curr_date = start_date
 
     # Print headers
-    print 'Pmt no'.rjust(6), ' ', 'Beg. bal.'.ljust(13), ' ',
+    print 'Pmt no'.rjust(6), ' ', 'Pmt dt'.rjust(10), ' ', 'Beg. bal.'.ljust(13), ' ',
     print 'Payment'.ljust(9), ' ', 'Principal'.ljust(9), ' ',
     print 'Interest'.ljust(9), ' ', 'End. bal.'.ljust(13)
     print ''.rjust(6, '-'), ' ', ''.ljust(13, '-'), ' ',
@@ -34,7 +38,7 @@ def amortization_table(principal, rate, term, additional_month=0, addiitonal_pri
             applied = round(payment - interest, 2)
         endBal = round(begBal - applied, 2)
 
-        print str(num).center(6), ' ',
+        print str(num).center(6), ' ', curr_date.strftime("%m/%d/%Y").center(10), ' ',
         print '{0:,.2f}'.format(begBal).rjust(13), ' ',
         print '{0:,.2f}'.format(payment).rjust(9), ' ',
         print '{0:,.2f}'.format(applied).rjust(9), ' ',
@@ -42,6 +46,7 @@ def amortization_table(principal, rate, term, additional_month=0, addiitonal_pri
         print '{0:,.2f}'.format(endBal).rjust(13)
 
         begBal = endBal
+        curr_date += relativedelta(months=+1)
         if begBal < 0:
             break
 
